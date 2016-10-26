@@ -12,7 +12,7 @@ router
     res.sendfile(path.join(__dirname + '/index.html'))
   })
   //retrieve requested url
-  .get('/:id', (req, res) => {
+  .get('/:id', (req, res, next) => {
     //get db object
     let db = database.get();
     console.log(req.params)
