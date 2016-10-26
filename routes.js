@@ -44,8 +44,8 @@ router
       if (err) {
         handleError(res, err.message, "Failed to create new url.");
       } else {
-        console.log(doc)
-        res.json({url: req.headers.host + "/" + doc.insertedId});
+        requestType = req.secure ? 'https://' : 'http://';
+        res.json({url: requestType + req.headers.host + "/" + doc.insertedId});
       }
     });
   });
