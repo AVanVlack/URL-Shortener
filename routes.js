@@ -18,12 +18,10 @@ router
     console.log(req.params)
     //get db entry for id
     db.collection('urls').findOne({ _id: req.params.id }, function(err, doc) {
-      if (err) {
-        handleError(res, err.message, "Failed to find url");
-      } else {
-        if(!doc.url){return next("Failed to find url");}
-        //redirect browser to new url
-        res.redirect(doc.url)
+      if(err){return next(err.message);}
+      if(!doc){return next("Failed to find url");}
+      //redirect browser to new url
+      res.redirect(doc.url)
       }
     });
   })
