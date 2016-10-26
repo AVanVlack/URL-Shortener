@@ -22,7 +22,6 @@ router
       if(!doc){return next("Failed to find url");}
       //redirect browser to new url
       res.redirect(doc.url)
-      }
     });
   })
 
