@@ -9,7 +9,6 @@ const url = require('url');
 router
   //details page
   .get('/', (req, res) => {
-    console.log(req);
     res.sendfile(path.join(__dirname + '/index.html'))
   })
   //retrieve requested url
@@ -22,6 +21,7 @@ router
       if (err) {
         handleError(res, err.message, "Failed to find url");
       } else {
+        if(!doc.url){return next("Failed to find url");}
         //redirect browser to new url
         res.redirect(doc.url)
       }
