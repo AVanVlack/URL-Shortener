@@ -3,6 +3,7 @@ const path = require('path')
 const router = express.Router();
 const database = require('./database');
 const shortid = require('shortid');
+const url = require('url');
 
 
 router
@@ -28,14 +29,19 @@ router
   })
 
   //Add new url
-  .get('/add/:newURL(*)', (req, res) => {
+  .get('/add/:newURL(*)', (req, res, next) => {
     //get db object
     let db = database.get();
 
+    let partURL = url.parse
+
+    if(partURL.protocol == null || partURL.hostname == null){
+      return next("Not a proper url")
+    }
     //build new entry
     newUrl = {
       _id: shortid.generate(),
-      url: req.params.newURL,
+      url: res.params.newURL,
       dateAdded: new Date()
     }
 
