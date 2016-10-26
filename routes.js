@@ -15,11 +15,10 @@ router
   .get('/:id', (req, res, next) => {
     //get db object
     let db = database.get();
-    console.log(req.params)
     //get db entry for id
     db.collection('urls').findOne({ _id: req.params.id }, function(err, doc) {
-      if(err){return next(err.message);}
-      if(!doc){return next("Failed to find url");}
+      if(err){return next(err);}
+      if(!doc){return next(new Error("Could not find URL"));}
       //redirect browser to new url
       res.redirect(doc.url)
     });
@@ -33,7 +32,7 @@ router
     let partURL = url.parse
 
     if(partURL.protocol == null || partURL.hostname == null){
-      return next("Not a proper url")
+      return next(new Error('Please provide proper URL'))
     }
     //build new entry
     newUrl = {
@@ -44,22 +43,12 @@ router
 
     //insert url to db
     db.collection('urls').insertOne(newUrl, function(err, doc) {
-      if (err) {
-        handleError(res, err.message, "Failed to create new url.");
-      } else {
-        requestType = req.secure ? 'https://' : 'http://';
-        res.json({url: requestType + req.headers.host + "/" + doc.insertedId});
-      }
+      if(err){return next(err);}
+      if(!doc){return next(new Error('Could not create entry'))}
+      
+      requestType = req.secure ? 'https://' : 'http://';
+      res.json({url: requestType + req.headers.host + "/" + doc.insertedId});
     });
   });
-
-//hangle errors
-function handleError(res, reason, message, code) {
-  console.log("ERROR: " + reason);
-  res.status(code || 500).json({"error": message});
-}
-
-
-
 
 module.exports = router;
